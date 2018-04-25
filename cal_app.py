@@ -20,7 +20,7 @@ except AttributeError:
         return QtGui.QApplication.translate(context, text, disambig)
 
 
-class TimerApp(QtGui.QMainWindow, design.Ui_MainWindow):
+class CalendarApp(QtGui.QMainWindow, design.Ui_MainWindow):
     buttonList = []
     DAYS_NUM = 7  # number of columns in the calendar
     WEEKS_NUM = 7  # number of rows in the calendar
@@ -44,6 +44,29 @@ class TimerApp(QtGui.QMainWindow, design.Ui_MainWindow):
                 # First row is the labels for the days of the week
                 if row == 0:
                     day = self.DAYS_OF_WEEK[column]
+                    newButton = QtGui.QPushButton('{d}'.format(d=day))
+                    if column < 5:
+                        newButton.setStyleSheet(
+                            """
+                            QPushButton
+                            {
+                                border:none;
+                                font: bold 18px;
+                            }
+                            """
+                        )
+                    else:
+                        # Highlight weekend in red
+                        newButton.setStyleSheet(
+                            """
+                            QPushButton
+                            {
+                                border:none;
+                                font: bold 18px;
+                                color: red;
+                            }
+                            """
+                        )
                 else:
                     # Skip until we hit the first day of the week for the current month
                     if row == 1 and column < first_day_of_week:
@@ -54,8 +77,10 @@ class TimerApp(QtGui.QMainWindow, design.Ui_MainWindow):
                         # Do not create more boxes than they are days in the current month
                         if day > days_in_month:
                             break
-                # Add new button and append it to the list of buttons
-                newButton = QtGui.QPushButton('{d}'.format(d=day))
+                        # Add new button and append it to the list of buttons
+                        newButton = QtGui.QPushButton('{d}'.format(d=day))
+                        newButton.setSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Expanding)
+                        # newButton.setStyleSheet("QPushButton{border:none}")
                 self.gridLayout.addWidget(newButton, row, column)
                 self.buttonList.append(newButton)
 
@@ -70,7 +95,7 @@ class TimerApp(QtGui.QMainWindow, design.Ui_MainWindow):
 
 def main():
     app = QtGui.QApplication(sys.argv)
-    timer_obj = TimerApp()
+    timer_obj = CalendarApp()
     timer_obj.show()
     app.exec_()
 
